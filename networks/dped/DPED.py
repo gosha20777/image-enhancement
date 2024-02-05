@@ -295,27 +295,6 @@ class DPED(object):
             #print("PSNR: %.3f" %PSNR)
             PSNR_dslr_enhanced_list[i] = PSNR
         print("(runtime: %.3f s) Average test PSNR for %d random test image patches: phone-enhanced %.3f, dslr-enhanced %.3f" %(time.time()-start, test_num_patch, np.mean(PSNR_phone_enhanced_list), np.mean(PSNR_dslr_enhanced_list) ))
-        
-        # test for images
-        start = time.time()
-        test_list_phone = sorted(glob(self.config.test_path_phone_image))
-        PSNR_phone_enhanced_list = np.zeros([test_num_image])
-        PSNR_dslr_enhanced_list = np.zeros([test_num_image])
-        indexes = []
-        for i in range(test_num_image):
-            #index = np.random.randint(len(test_list_phone))
-            index = i
-            indexes.append(index)
-            test_image_phone = preprocess(cv2.imread(test_list_phone[index]).astype("float32"))
-            test_image_enhanced = self.sess.run(self.enhanced_test_unknown , feed_dict={self.phone_test_unknown:[test_image_phone]})
-            cv2.imwrite(("./samples/%s/image/phone_%d.png" %(self.config.dataset_name, i)), postprocess(test_image_phone))
-            cv2.imwrite(("./samples/%s/image/enhanced_%d.png" %(self.config.dataset_name, i)), postprocess(test_image_enhanced[0]))
-            PSNR = calc_PSNR(postprocess(test_image_enhanced[0]), postprocess(test_image_phone))
-            #print("PSNR: %.3f" %PSNR)
-            PSNR_phone_enhanced_list[i] = PSNR
-        if test_num_image > 0:
-            print("(runtime: %.3f s) Average test PSNR for %d random full test images: phone-enhanced %.3f" %(time.time()-start, test_num_image, np.mean(PSNR_phone_enhanced_list)))
-        
        
     def build_log_summary(self):  
         self.output_summary = tf.compat.v1.summary.image("output", self.enhanced_test)
