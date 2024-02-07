@@ -179,7 +179,7 @@ class DPED(object):
             probability = tf.compat.v1.nn.sigmoid(logits)
         return logits, probability
     
-    def pretrain_discriminator(self, load = True):
+    def pretrain_discriminator(self, load = True, epoch = 10000):
         if load == True:
             if self.load():
                 print(" [*] Load SUCCESS")
@@ -188,7 +188,7 @@ class DPED(object):
         else:
             print(" Discriminator training starts from beginning")
         start = time.time()
-        for i in range(0, 10000):
+        for i in range(0, epoch):
             phone_batch, dslr_batch = get_batch(self.dataset_phone, self.dataset_dslr, self.config)
             _ = self.sess.run(self.D_optimizer , feed_dict={self.phone_patch:phone_batch, self.dslr_patch:dslr_batch})
             
@@ -200,7 +200,7 @@ class DPED(object):
         print("pretraining complete")
         self.save()
     
-    def train(self, load = True):
+    def train(self, load = True, epoch = 100000):
         if load == True:
             if self.load():
                 print(" [*] Load SUCCESS")
@@ -209,7 +209,7 @@ class DPED(object):
         else:
             print(" Overall training starts from beginning")
         start = time.time()
-        for i in range(0, 100000):
+        for i in range(0, epoch):
             phone_batch, dslr_batch = get_batch(self.dataset_phone, self.dataset_dslr, self.config)
             _, enhanced_batch = self.sess.run([self.G_optimizer, self.enhanced_patch] , feed_dict={self.phone_patch:phone_batch, self.dslr_patch:dslr_batch})
             _ = self.sess.run(self.D_optimizer , feed_dict={self.phone_patch:enhanced_batch, self.dslr_patch:dslr_batch})
