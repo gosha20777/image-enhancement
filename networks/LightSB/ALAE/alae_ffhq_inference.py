@@ -11,7 +11,6 @@ import numpy as np
 import argparse
 
 # from PIL import Image
-# import bimpy
 import logging
 # from defaults import get_cfg_defaults
 
